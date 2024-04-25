@@ -7,13 +7,13 @@ import (
 
 type Store struct {
 	mutex sync.Mutex
-	data  map[string]string
+	log   Log
 }
 
-func NewStore() Store {
+func NewStore(folder string) Store {
 	return Store{
 		mutex: sync.Mutex{},
-		data:  make(map[string]string),
+		log:   NewLog(folder),
 	}
 }
 
@@ -21,15 +21,15 @@ func (s *Store) Set(key, value string) error {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
-	s.data[key] = value
+	s.log.Append(key, value)
 
 	return nil
 }
 
 func (s *Store) Get(key string) (string, error) {
-	value, ok := s.data[key]
+	value, err := s.log.Find(key)
 
-	if !ok {
+	if err != nil {
 		return "", fmt.Errorf("'%s' key not found", key)
 	}
 

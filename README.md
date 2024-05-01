@@ -7,7 +7,7 @@ beginning
 
 This is not a huge undertaking but to guarantee it's completion I'll be breaking down
 the task into several distinct stages - each one with a clear goal. That way I'll be
-working my way up to a fully functional implementation with (decent throughput).
+working my way up to a fully functional implementation with decent throughput.
 
 ## Stages
 
@@ -29,8 +29,8 @@ beforehand the length of each key or value)
 
 ### Mocking
 As it's compiled language, there's no real "mocking" as you have in other languages like
-Python or Javascript. This is don using DI (Dependency Injection) and injecting a "mock"
-for the interface.
+Python or Javascript. This is achieved using DI (Dependency Injection) and injecting 
+a "mock" for the interface.
 
 There are several sophisticated "mock" libraries but as I didn't really need anything
-fancy, I just rolled a very basic one on my own.
+fancy, I just rolled a very basic one of my own.

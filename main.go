@@ -3,16 +3,17 @@ package main
 import (
 	"fmt"
 
+	"github.com/mdbottino/log-based-kv-store/filesystem"
 	"github.com/mdbottino/log-based-kv-store/store"
 )
 
 func main() {
-	s := store.NewStore("./data")
+	s := store.NewStore("./data", filesystem.FileSystem{})
 
 	s.Set("banana", "pijama")
 	s.Set("another", "value")
 	s.Set("more", "values")
-	s.Set("banana", "pijama")
+	s.Set("banana", "other pijama")
 
 	val, _ := s.Get("banana")
 	fmt.Println("'Banana' => " + val)

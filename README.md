@@ -24,3 +24,13 @@ working my way up to a fully functional implementation with (decent throughput).
 - Using a binary format to store the data, that means it is no longer human-readable
 but has better performance (potentially less storage used and faster reads as we know
 beforehand the length of each key or value)
+
+## Learning experience
+
+### Mocking
+As it's compiled language, there's no real "mocking" as you have in other languages like
+Python or Javascript. This is don using DI (Dependency Injection) and injecting a "mock"
+for the interface.
+
+There are several sophisticated "mock" libraries but as I didn't really need anything
+fancy, I just rolled a very basic one on my own.

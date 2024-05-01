@@ -3,6 +3,8 @@ package store
 import (
 	"fmt"
 	"sync"
+
+	"github.com/mdbottino/log-based-kv-store/filesystem"
 )
 
 type Store struct {
@@ -10,10 +12,10 @@ type Store struct {
 	log   Log
 }
 
-func NewStore(folder string) Store {
+func NewStore(folder string, fs filesystem.FileCreator) Store {
 	return Store{
 		mutex: sync.Mutex{},
-		log:   NewLog(folder),
+		log:   NewLog(folder, fs),
 	}
 }
 

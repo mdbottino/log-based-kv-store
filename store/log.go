@@ -4,22 +4,23 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"os"
 	"path"
 	"strings"
 	"time"
+
+	"github.com/mdbottino/log-based-kv-store/filesystem"
 )
 
 type Log struct {
 	filename string
-	handle   *os.File
+	handle   filesystem.FileLike
 }
 
-func NewLog(folder string) Log {
+func NewLog(folder string, fs filesystem.FileCreator) Log {
 	timestamp := time.Now().Unix()
 	filename := path.Join(folder, fmt.Sprintf("%d.log", timestamp))
 
-	handle, err := os.Create(filename)
+	handle, err := fs.Create(filename)
 	if err != nil {
 		panic("failed to create the log file")
 	}
@@ -37,7 +38,7 @@ func (l Log) Append(key, value string) error {
 		return errors.New("failed to move the offset to end of the file")
 	}
 
-	_, err = l.handle.Write([]byte(fmt.Sprintf("%s: %s\n", key, value)))
+	_, err = l.handle.Write([]byte(fmt.Sprintf("%s:%s\n", key, value)))
 	if err != nil {
 		return errors.New("failed to write to the log")
 	}

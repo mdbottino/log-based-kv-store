@@ -11,12 +11,12 @@ working my way up to a fully functional implementation with (decent throughput).
 
 ## Stages
 
-1. Key-value store using a map (basic API)
-2. Store data by writing and reading to/from a single file (a Log)
-3. Split the file into multiple smaller files when a certain size is reached (Segments)
-4. Use an index to store the position of each key in the appropriate segment
-5. Add a background process that compacts the segments after some time
-6. Allow the segment size and time to be configured
+1. [x] Key-value store using a map (basic API)
+2. [x] Store data by writing and reading to/from a single file (a Log)
+3. [ ] Split the file into multiple smaller files when a certain size is reached (Segments)
+4. [ ] Use an index to store the position of each key in the appropriate segment
+5. [ ] Add a background process that compacts the segments after some time
+6. [ ] Allow the segment size and time to be configured
 
 
 ## Things that can be improved

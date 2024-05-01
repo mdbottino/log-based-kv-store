@@ -73,3 +73,21 @@ func TestLogFindExistingKey(t *testing.T) {
 		t.Fatalf("retrieved the wrong value from the log")
 	}
 }
+
+func TestLogFindExistingKeyWithMultipleEntries(t *testing.T) {
+	mockFs := mocks.NewMockFileSystem()
+
+	log := NewLog("./data", mockFs)
+	log.Append("key", "value")
+	log.Append("more", "data")
+	log.Append("key", "updated value")
+
+	val, err := log.Find("key")
+	if err != nil {
+		t.Fatalf("failed to retrieve a key from the log")
+	}
+
+	if val != "updated value" {
+		t.Fatalf("retrieved the wrong value from the log")
+	}
+}

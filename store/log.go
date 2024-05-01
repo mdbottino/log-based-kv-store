@@ -64,13 +64,21 @@ func (l Log) Find(key string) (string, error) {
 
 	scanner := bufio.NewScanner(l.handle)
 
+	value := ""
+	found := false
+
 	for scanner.Scan() {
 		line := scanner.Text()
 		k, v, err := getKeyAndValue(line)
 
 		if err == nil && k == key {
-			return v, nil
+			found = true
+			value = v
 		}
+	}
+
+	if found {
+		return value, nil
 	}
 
 	return "", errors.New("couldn't find the key in the file")

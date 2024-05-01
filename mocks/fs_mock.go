@@ -54,8 +54,22 @@ func (mf MockFile) Write(p []byte) (n int, err error) {
 	return written, nil
 }
 
-type MockFileSystem struct{}
+func (mf MockFile) GetSize() int {
+	return mf.state.length
+}
+
+type MockFileSystem struct {
+	Handle *MockFile
+}
+
+func NewMockFileSystem() MockFileSystem {
+	mf := NewMockFile()
+	mfs := MockFileSystem{}
+
+	mfs.Handle = &mf
+	return mfs
+}
 
 func (mfs MockFileSystem) Create(name string) (filesystem.FileLike, error) {
-	return NewMockFile(), nil
+	return mfs.Handle, nil
 }

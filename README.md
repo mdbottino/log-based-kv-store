@@ -9,14 +9,19 @@ This is not a huge undertaking but to guarantee it's completion I'll be breaking
 the task into several distinct stages - each one with a clear goal. That way I'll be
 working my way up to a fully functional implementation with decent throughput.
 
+Although not initially the idea, having a TCP server and a client to load/retrieve data
+from the database has proven to be particularly useful (and fun).
+
 ## Stages
 
-1. [x] Key-value store using a map (basic API)
-2. [x] Store data by writing and reading to/from a single file (a Log)
-3. [ ] Split the file into multiple smaller files when a certain size is reached (Segments)
-4. [ ] Use an index to store the position of each key in the appropriate segment
-5. [ ] Add a background process that compacts the segments after some time
-6. [ ] Allow the segment size and time to be configured
+- [x] Key-value store using a map (basic API)
+- [x] Store data by writing and reading to/from a single file (a Log)
+- [x] Turn the Key-value store into a TCP server that accepts connections using a 
+(very) simplified version of the REDIS protocol
+- [ ] Split the file into multiple smaller files when a certain size is reached (Segments)
+- [ ] Use an index to store the position of each key in the appropriate segment
+- [ ] Add a background process that compacts the segments after some time
+- [ ] Allow the segment size and time to be configured
 
 
 ## Things that can be improved
@@ -24,6 +29,12 @@ working my way up to a fully functional implementation with decent throughput.
 - Using a binary format to store the data, that means it is no longer human-readable
 but has better performance (potentially less storage used and faster reads as we know
 beforehand the length of each key or value)
+- Improving the way the server handles connections. Right now it will happily
+create any number of goroutines to respond to the load, potentially overloading a
+system
+- Improving the client to allow us to issue arbitrary commands instead of 
+predefined ones
+
 
 ## Learning experience
 
@@ -34,3 +45,9 @@ a "mock" for the interface.
 
 There are several sophisticated "mock" libraries but as I didn't really need anything
 fancy, I just rolled a very basic one of my own.
+
+### Testing
+Todo
+
+### CI/CD
+Todo

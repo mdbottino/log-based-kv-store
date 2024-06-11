@@ -1,85 +1,31 @@
 package store
 
 import (
-	"bufio"
-	"errors"
-	"fmt"
-	"path"
-	"strings"
-	"time"
-
 	"github.com/mdbottino/log-based-kv-store/filesystem"
 )
 
 type Log struct {
-	filename string
-	handle   filesystem.FileLike
+	segments []Segment
 }
 
 func NewLog(folder string, fs filesystem.FileCreator) Log {
-	timestamp := time.Now().Unix()
-	filename := path.Join(folder, fmt.Sprintf("%d.log", timestamp))
-
-	handle, err := fs.Create(filename)
-	if err != nil {
-		panic("failed to create the log file")
-	}
+	segment := NewSegment(folder, fs)
 
 	return Log{
-		filename,
-		handle,
+		[]Segment{segment},
 	}
-
 }
 
 func (l Log) Append(key, value string) error {
-	_, err := l.handle.Seek(0, 2)
-	if err != nil {
-		return errors.New("failed to move the offset to end of the file")
-	}
+	idx := len(l.segments) - 1
+	latestSegment := l.segments[idx]
 
-	_, err = l.handle.Write([]byte(fmt.Sprintf("%s:%s\n", key, value)))
-	if err != nil {
-		return errors.New("failed to write to the log")
-	}
-
-	return nil
-}
-
-func getKeyAndValue(line string) (string, string, error) {
-	parts := strings.Split(line, ":")
-
-	if len(parts) == 2 {
-		return parts[0], parts[1], nil
-	}
-
-	return "", "", errors.New("failed to retrieve key and value from line")
+	return latestSegment.Append(key, value)
 }
 
 func (l Log) Find(key string) (string, error) {
-	_, err := l.handle.Seek(0, 0)
-	if err != nil {
-		return "", errors.New("failed to move the offset to beginning of the file")
-	}
+	idx := len(l.segments) - 1
+	latestSegment := l.segments[idx]
 
-	scanner := bufio.NewScanner(l.handle)
-
-	value := ""
-	found := false
-
-	for scanner.Scan() {
-		line := scanner.Text()
-		k, v, err := getKeyAndValue(line)
-
-		if err == nil && k == key {
-			found = true
-			value = v
-		}
-	}
-
-	if found {
-		return value, nil
-	}
-
-	return "", errors.New("couldn't find the key in the file")
+	return latestSegment.Find(key)
 }

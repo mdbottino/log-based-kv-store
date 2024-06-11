@@ -2,6 +2,8 @@ package mocks
 
 import (
 	"errors"
+	"io/fs"
+	"time"
 
 	"github.com/mdbottino/log-based-kv-store/filesystem"
 )
@@ -14,7 +16,37 @@ type MockState struct {
 }
 
 type MockFile struct {
+	name  string
 	state *MockState
+}
+
+type MockFileInfo struct {
+	name string
+	size int64
+}
+
+func (mfi MockFileInfo) Name() string {
+	return mfi.name
+}
+
+func (mfi MockFileInfo) Size() int64 {
+	return mfi.size
+}
+
+func (mfi MockFileInfo) Mode() fs.FileMode {
+	return 600
+}
+
+func (mfi MockFileInfo) ModTime() time.Time {
+	return time.Now()
+}
+
+func (mfi MockFileInfo) IsDir() bool {
+	return false
+}
+
+func (mfi MockFileInfo) Sys() any {
+	return nil
 }
 
 const MAX_SIZE int = 1024
@@ -22,6 +54,7 @@ const MAX_SIZE int = 1024
 func NewMockFile() MockFile {
 	rows := make([]byte, MAX_SIZE)
 	return MockFile{
+		"some-file.log",
 		&MockState{rows, 0, false, 0},
 	}
 }
@@ -56,6 +89,10 @@ func (mf MockFile) Write(p []byte) (n int, err error) {
 
 func (mf MockFile) GetSize() int {
 	return mf.state.length
+}
+
+func (mf MockFile) Stat() (fs.FileInfo, error) {
+	return MockFileInfo{mf.name, int64(mf.state.length)}, nil
 }
 
 type MockFileSystem struct {

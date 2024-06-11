@@ -2,6 +2,7 @@ package filesystem
 
 import (
 	"io"
+	"io/fs"
 	"os"
 )
 
@@ -9,6 +10,7 @@ type FileLike interface {
 	Seek(int64, int) (int64, error)
 	io.Reader
 	io.Writer
+	Stat() (fs.FileInfo, error)
 }
 
 type File struct {

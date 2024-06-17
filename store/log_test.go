@@ -104,10 +104,16 @@ func TestAddSegment(t *testing.T) {
 	defer mockFs.Clear()
 
 	log := NewLog("./data", mockFs)
+	log.Append("key", "value")
 	log.AddSegment()
 
 	if len(log.segments) != 2 {
 		t.Fatalf("failed to create another segment")
+	}
+
+	val, _ := log.Find("key")
+	if val != "value" {
+		t.Fatalf("retrieved the wrong value")
 	}
 }
 
@@ -216,6 +222,34 @@ func TestGetLastSegmentMoreThanOneSegment(t *testing.T) {
 
 	_, err := segment.Find("key")
 	if err == nil {
+		t.Fatalf("retrieved wrong value from the log")
+	}
+}
+
+func TestAutomaticCreationOfSegments(t *testing.T) {
+	mockFs := mocks.NewMockFileSystem()
+	defer mockFs.Clear()
+
+	log := NewLog("./data", mockFs)
+	log.Append("key", "value")
+	log.Append("other", "stuff")
+	log.Append("a very long key", "a quick brown fox jumped over the lazy dog")
+	log.Append("and I think to myself", "what a wonderful world!")
+	log.Append("I'm in the", "newly created segment")
+
+	segment := log.GetLatestSegment()
+
+	if len(log.segments) != 2 {
+		t.Fatalf("failed to automatically create a new segment")
+	}
+
+	_, err := segment.Find("other")
+	if err == nil {
+		t.Fatalf("retrieved wrong value from the log")
+	}
+
+	val, _ := segment.Find("I'm in the")
+	if val != "newly created segment" {
 		t.Fatalf("retrieved wrong value from the log")
 	}
 }

@@ -18,7 +18,7 @@ from the database has proven to be particularly useful (and fun).
 - [x] Store data by writing and reading to/from a single file (a Log)
 - [x] Turn the Key-value store into a TCP server that accepts connections using a 
 (very) simplified version of the REDIS protocol
-- [ ] Split the file into multiple smaller files when a certain size is reached (Segments)
+- [x] Split the file into multiple smaller files when a certain size is reached (Segments)
 - [ ] Use an index to store the position of each key in the appropriate segment
 - [ ] Add a background process that compacts the segments after some time
 - [ ] Allow the segment size and time to be configured

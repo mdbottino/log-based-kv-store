@@ -19,7 +19,7 @@ from the database has proven to be particularly useful (and fun).
 - [x] Turn the Key-value store into a TCP server that accepts connections using a 
 (very) simplified version of the REDIS protocol
 - [x] Split the file into multiple smaller files when a certain size is reached (Segments)
-- [ ] Allow the segment size and time to be configured
+- [x] Allow the segment size and time to be configured
 - [ ] Use an index to store the position of each key in the appropriate segment
 - [ ] Add a background process that compacts the segments after some time
 

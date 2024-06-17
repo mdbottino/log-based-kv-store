@@ -9,13 +9,15 @@ import (
 
 type Store struct {
 	mutex sync.Mutex
-	log   Log
+	log   *Log
 }
 
 func NewStore(folder string, fs filesystem.FileCreator) Store {
+	log := NewLog(folder, fs)
+
 	return Store{
 		mutex: sync.Mutex{},
-		log:   NewLog(folder, fs),
+		log:   &log,
 	}
 }
 

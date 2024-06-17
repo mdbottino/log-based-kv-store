@@ -51,10 +51,10 @@ func (mfi MockFileInfo) Sys() any {
 
 const MAX_SIZE int = 1024
 
-func NewMockFile() MockFile {
+func NewMockFile(name string) MockFile {
 	rows := make([]byte, MAX_SIZE)
 	return MockFile{
-		"some-file.log",
+		name,
 		&MockState{rows, 0, false, 0},
 	}
 }
@@ -96,17 +96,27 @@ func (mf MockFile) Stat() (fs.FileInfo, error) {
 }
 
 type MockFileSystem struct {
-	Handle *MockFile
 }
 
+var mockFiles = make([]MockFile, 0)
+
 func NewMockFileSystem() MockFileSystem {
-	mf := NewMockFile()
 	mfs := MockFileSystem{}
 
-	mfs.Handle = &mf
 	return mfs
 }
 
+func (mfs MockFileSystem) Clear() {
+	mockFiles = make([]MockFile, 0)
+}
+
+func (mfs MockFileSystem) GetHandle(idx int) MockFile {
+	return mockFiles[idx]
+}
+
 func (mfs MockFileSystem) Create(name string) (filesystem.FileLike, error) {
-	return mfs.Handle, nil
+	mf := NewMockFile(name)
+	mockFiles = append(mockFiles, mf)
+
+	return &mf, nil
 }

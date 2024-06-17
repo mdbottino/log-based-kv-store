@@ -47,7 +47,18 @@ There are several sophisticated "mock" libraries but as I didn't really need any
 fancy, I just rolled a very basic one of my own.
 
 ### Testing
-Todo
+Pretty straightforward. You test using `go test`, in this case it's `go test ./store`.
+To have a coverage report:
+```bash
+# This allows you to get a percentage of coverage along the tests that passed/failed
+# and stores the coverage report in "coverage.txt"
+$ go test ./store -v -coverprofile=coverage.txt
+
+# This has a very simple but useful UI to check what lines are covered in each file
+# (opens an html file in the browser)
+$ go tool cover -html=coverage.txt 
+```
 
 ### CI/CD
-Todo
+Once again pretty straightforward using Github Actions. There's a default action to
+trigger the test suite and it required minimal changes to work properly

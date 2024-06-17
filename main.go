@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"os"
 	"strings"
 
 	"github.com/mdbottino/log-based-kv-store/filesystem"
@@ -118,7 +119,12 @@ func handle(conn net.Conn, s *store.Store) {
 }
 
 func main() {
-	s := store.NewStore("./data", filesystem.FileSystem{})
+	contents, err := os.ReadFile("config.yml")
+	if err != nil {
+		fmt.Println("Failed to read from the config file")
+	}
+
+	s := store.NewStore("./data", filesystem.FileSystem{}, store.NewConfig(contents))
 	address := "127.0.0.1:10440"
 	server, err := net.Listen("tcp", address)
 	if err != nil {

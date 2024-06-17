@@ -11,7 +11,7 @@ func TestNewStore(t *testing.T) {
 	mockFs := mocks.NewMockFileSystem()
 	defer mockFs.Clear()
 
-	store := NewStore("./data", mockFs)
+	store := NewStore("./data", mockFs, Config{SegmentConfig{100}})
 	expectedType := "store.Store"
 
 	if reflect.TypeOf(store).String() != expectedType {
@@ -23,7 +23,7 @@ func TestStoreSet(t *testing.T) {
 	mockFs := mocks.NewMockFileSystem()
 	defer mockFs.Clear()
 
-	store := NewStore("./data", mockFs)
+	store := NewStore("./data", mockFs, Config{SegmentConfig{100}})
 	err := store.Set("key", "value")
 	if err != nil {
 		t.Fatalf("failed to store a key in the store")
@@ -34,7 +34,7 @@ func TestStoreGetEmptyStore(t *testing.T) {
 	mockFs := mocks.NewMockFileSystem()
 	defer mockFs.Clear()
 
-	store := NewStore("./data", mockFs)
+	store := NewStore("./data", mockFs, Config{SegmentConfig{100}})
 
 	_, err := store.Get("key")
 	if err == nil {
@@ -46,7 +46,7 @@ func TestStoreGetAfterSet(t *testing.T) {
 	mockFs := mocks.NewMockFileSystem()
 	defer mockFs.Clear()
 
-	store := NewStore("./data", mockFs)
+	store := NewStore("./data", mockFs, Config{SegmentConfig{100}})
 	key := "key"
 	value := "value"
 

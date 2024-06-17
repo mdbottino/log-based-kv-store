@@ -6,22 +6,29 @@ import (
 	"github.com/mdbottino/log-based-kv-store/filesystem"
 )
 
+// 1KB
+const DEFAULT_MAX_SEGMENT_SIZE = 1024
+
 type Log struct {
-	segments []Segment
-	folder   string
-	fs       filesystem.FileCreator
+	segments       []Segment
+	folder         string
+	fs             filesystem.FileCreator
+	maxSegmentSize int
 }
 
-// This is a pretty low value to deliverately trigger segment rotation more often
-const MAX_SEGMENT_SIZE = 100
-
-func NewLog(folder string, fs filesystem.FileCreator) Log {
+func NewLog(folder string, fs filesystem.FileCreator, cfg Config) Log {
 	segment := NewSegment(folder, fs)
+
+	size := DEFAULT_MAX_SEGMENT_SIZE
+	if cfg.Segments.MaxSize != 0 {
+		size = cfg.Segments.MaxSize
+	}
 
 	return Log{
 		[]Segment{segment},
 		folder,
 		fs,
+		size,
 	}
 }
 
@@ -33,7 +40,7 @@ func (l *Log) Append(key, value string) error {
 		return errors.New("an error occurred while checking for the log stats")
 	}
 
-	if size > MAX_SEGMENT_SIZE {
+	if size > l.maxSegmentSize {
 		newSegment := l.AddSegment()
 		return newSegment.Append(key, value)
 	}

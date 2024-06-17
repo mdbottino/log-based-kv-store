@@ -12,8 +12,8 @@ type Store struct {
 	log   *Log
 }
 
-func NewStore(folder string, fs filesystem.FileCreator) Store {
-	log := NewLog(folder, fs)
+func NewStore(folder string, fs filesystem.FileCreator, cfg Config) Store {
+	log := NewLog(folder, fs, cfg)
 
 	return Store{
 		mutex: sync.Mutex{},

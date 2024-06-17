@@ -11,7 +11,7 @@ func TestNewLog(t *testing.T) {
 	mockFs := mocks.NewMockFileSystem()
 	defer mockFs.Clear()
 
-	log := NewLog("./data", mockFs)
+	log := NewLog("./data", mockFs, Config{SegmentConfig{100}})
 	expectedType := "store.Log"
 
 	if reflect.TypeOf(log).String() != expectedType {
@@ -23,7 +23,7 @@ func TestLogAppendEmpty(t *testing.T) {
 	mockFs := mocks.NewMockFileSystem()
 	defer mockFs.Clear()
 
-	log := NewLog("./data", mockFs)
+	log := NewLog("./data", mockFs, Config{SegmentConfig{100}})
 	log.Append("key", "value")
 
 	// 3 chars for the key, 1 for the ':', 5 for the value and 1 for the newline
@@ -37,7 +37,7 @@ func TestLogAppend(t *testing.T) {
 	mockFs := mocks.NewMockFileSystem()
 	defer mockFs.Clear()
 
-	log := NewLog("./data", mockFs)
+	log := NewLog("./data", mockFs, Config{SegmentConfig{100}})
 	log.Append("key", "value")
 	log.Append("more", "data")
 
@@ -52,7 +52,7 @@ func TestLogFindKeyNotPresent(t *testing.T) {
 	mockFs := mocks.NewMockFileSystem()
 	defer mockFs.Clear()
 
-	log := NewLog("./data", mockFs)
+	log := NewLog("./data", mockFs, Config{SegmentConfig{100}})
 	log.Append("key", "value")
 	log.Append("more", "data")
 
@@ -66,7 +66,7 @@ func TestLogFindExistingKey(t *testing.T) {
 	mockFs := mocks.NewMockFileSystem()
 	defer mockFs.Clear()
 
-	log := NewLog("./data", mockFs)
+	log := NewLog("./data", mockFs, Config{SegmentConfig{100}})
 	log.Append("key", "value")
 	log.Append("more", "data")
 
@@ -84,7 +84,7 @@ func TestLogFindExistingKeyWithMultipleEntries(t *testing.T) {
 	mockFs := mocks.NewMockFileSystem()
 	defer mockFs.Clear()
 
-	log := NewLog("./data", mockFs)
+	log := NewLog("./data", mockFs, Config{SegmentConfig{100}})
 	log.Append("key", "value")
 	log.Append("more", "data")
 	log.Append("key", "updated value")
@@ -103,7 +103,7 @@ func TestAddSegment(t *testing.T) {
 	mockFs := mocks.NewMockFileSystem()
 	defer mockFs.Clear()
 
-	log := NewLog("./data", mockFs)
+	log := NewLog("./data", mockFs, Config{SegmentConfig{100}})
 	log.Append("key", "value")
 	log.AddSegment()
 
@@ -121,7 +121,7 @@ func TestFindKeyOnTheNewestSegment(t *testing.T) {
 	mockFs := mocks.NewMockFileSystem()
 	defer mockFs.Clear()
 
-	log := NewLog("./data", mockFs)
+	log := NewLog("./data", mockFs, Config{SegmentConfig{100}})
 	log.Append("key", "value")
 	log.Append("more", "data")
 	log.AddSegment()
@@ -145,7 +145,7 @@ func TestFindKeyOnTheOldestSegment(t *testing.T) {
 	mockFs := mocks.NewMockFileSystem()
 	defer mockFs.Clear()
 
-	log := NewLog("./data", mockFs)
+	log := NewLog("./data", mockFs, Config{SegmentConfig{100}})
 	log.Append("key", "value")
 	log.Append("more", "data")
 	log.AddSegment()
@@ -169,7 +169,7 @@ func TestFindKeyNotPresentWithMoreThanOnceSegment(t *testing.T) {
 	mockFs := mocks.NewMockFileSystem()
 	defer mockFs.Clear()
 
-	log := NewLog("./data", mockFs)
+	log := NewLog("./data", mockFs, Config{SegmentConfig{100}})
 	log.Append("key", "value")
 	log.AddSegment()
 	log.Append("other", "stuff")
@@ -188,7 +188,7 @@ func TestGetLastSegmentOneSegment(t *testing.T) {
 	mockFs := mocks.NewMockFileSystem()
 	defer mockFs.Clear()
 
-	log := NewLog("./data", mockFs)
+	log := NewLog("./data", mockFs, Config{SegmentConfig{100}})
 	log.Append("key", "value")
 
 	segment := log.GetLatestSegment()
@@ -208,7 +208,7 @@ func TestGetLastSegmentMoreThanOneSegment(t *testing.T) {
 	mockFs := mocks.NewMockFileSystem()
 	defer mockFs.Clear()
 
-	log := NewLog("./data", mockFs)
+	log := NewLog("./data", mockFs, Config{SegmentConfig{100}})
 	log.Append("key", "value")
 	log.AddSegment()
 	log.Append("other", "stuff")
@@ -230,7 +230,7 @@ func TestAutomaticCreationOfSegments(t *testing.T) {
 	mockFs := mocks.NewMockFileSystem()
 	defer mockFs.Clear()
 
-	log := NewLog("./data", mockFs)
+	log := NewLog("./data", mockFs, Config{SegmentConfig{100}})
 	log.Append("key", "value")
 	log.Append("other", "stuff")
 	log.Append("a very long key", "a quick brown fox jumped over the lazy dog")

@@ -1,0 +1,3 @@
+segments:
+  # 1MB by default
+  maxSize: 1048576
